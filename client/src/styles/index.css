@@ -7,3 +7,23 @@
     margin: 0;
     padding: 0;
 }
+
+.header{
+    font-size: 28px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    text-decoration: underline;
+}
+
+.logo{
+    font-size: 21px;
+    transform: rotate(-9deg) translate(-9px, -16px);
+    font-family: cursive;
+    color: green;
+}
+.flex-row-center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
