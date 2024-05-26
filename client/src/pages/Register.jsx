@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { saveToken, saveUserId, setIsAuthenticated, saveRole } from "../session";
+import Logo from '../components/Logo';
 
 const Register = () => {
   const navigate = useNavigate();

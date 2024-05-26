@@ -9,6 +9,7 @@ const propertySchema = new mongoose.Schema({
   collegesNearby: { type: Boolean, default: false },
   // Add more fields as needed
   seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  likes: { type: Number, default: 0 }
 });
 
 module.exports = mongoose.model('Property', propertySchema);

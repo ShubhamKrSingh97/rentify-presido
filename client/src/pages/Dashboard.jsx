@@ -11,6 +11,11 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const role = getRole();
 
+  const handlePropertiesUpdate = (updatedProperties) => {
+    setProperties(updatedProperties);
+  };
+
+
   const fetchPropertiesBySellerId = async () => {
     try {
       const response = await axios.get(`/api/properties/seller/${getUserId()}`); // Replace YOUR_SELLER_ID with the actual seller ID
@@ -67,7 +72,7 @@ const Dashboard = () => {
       </div>
       {error && <div className="alert alert-danger">{error}</div>}
       {role === 'seller' &&  <PropertyForm onPropertyPosted={handlePropertyPosted} />}
-      {role === 'seller' ? <PropertyListSeller properties={properties} onDelete={handleDelete} /> : <PropertyListBuyer properties={properties}/>}
+      {role === 'seller' ? <PropertyListSeller properties={properties} onDelete={handleDelete} /> : <PropertyListBuyer properties={properties} onPropertiesUpdate={handlePropertiesUpdate}/>}
     </div>
   );
 };

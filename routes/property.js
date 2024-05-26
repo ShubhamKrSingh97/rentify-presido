@@ -71,4 +71,5 @@ router.get('/:id/seller', async (req, res) => {
   }
 });
 
+
 module.exports = router;

@@ -1,10 +1,13 @@
 // src/components/PropertyListContainer.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import PropertyList from './PropertyListSeller';
+import io from 'socket.io-client';
+import PropertyListBuyer from './PropertyListBuyer';
 
-const PropertyListContainer = () => {
-  const [properties, setProperties] = useState([]);
+const socket = io('http://localhost:5000');
+
+const PropertyListContainer = ({pprops}) => {
+  const [properties, setProperties] = useState(pprops);
   const [filters, setFilters] = useState({
     place: '',
     minArea: '',
@@ -17,6 +20,18 @@ const PropertyListContainer = () => {
 
   useEffect(() => {
     fetchProperties();
+    socket.on('propertyLiked', (data) => {
+      console.log(data)
+      setProperties((prevProperties) =>
+        prevProperties.map((property) =>
+          property._id === data.id ? { ...property, likes: data.likes } : property
+        )
+      );
+    });
+
+    return () => {
+      socket.off('propertyLiked');
+    };
   }, []);
 
   const fetchProperties = async () => {
@@ -41,6 +56,10 @@ const PropertyListContainer = () => {
     fetchProperties();
   };
 
+  const handlePropertiesUpdate = (updatedProperties) => {
+    setProperties(updatedProperties);
+  };
+
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Available Properties</h1>
@@ -56,8 +75,8 @@ const PropertyListContainer = () => {
               className="form-control"
             />
           </div>
-          <div className="col-md-2 mb-3">
-            <label className="form-label">Min Area (sqft)</label>
+          <div className="col-md-4 mb-3">
+            <label className="form-label">Minimum Area (sqft)</label>
             <input
               type="number"
               name="minArea"
@@ -66,8 +85,8 @@ const PropertyListContainer = () => {
               className="form-control"
             />
           </div>
-          <div className="col-md-2 mb-3">
-            <label className="form-label">Max Area (sqft)</label>
+          <div className="col-md-4 mb-3">
+            <label className="form-label">Maximum Area (sqft)</label>
             <input
               type="number"
               name="maxArea"
@@ -76,7 +95,9 @@ const PropertyListContainer = () => {
               className="form-control"
             />
           </div>
-          <div className="col-md-2 mb-3">
+        </div>
+        <div className="row">
+          <div className="col-md-4 mb-3">
             <label className="form-label">Bedrooms</label>
             <input
               type="number"
@@ -86,7 +107,7 @@ const PropertyListContainer = () => {
               className="form-control"
             />
           </div>
-          <div className="col-md-2 mb-3">
+          <div className="col-md-4 mb-3">
             <label className="form-label">Bathrooms</label>
             <input
               type="number"
@@ -96,9 +117,7 @@ const PropertyListContainer = () => {
               className="form-control"
             />
           </div>
-        </div>
-        <div className="row">
-          <div className="col-md-6 mb-3">
+          <div className="col-md-4 mb-3">
             <div className="form-check">
               <input
                 type="checkbox"
@@ -106,11 +125,12 @@ const PropertyListContainer = () => {
                 checked={filters.hospitalsNearby}
                 onChange={handleFilterChange}
                 className="form-check-input"
+                id="hospitalsNearby"
               />
-              <label className="form-check-label">Hospitals Nearby</label>
+              <label className="form-check-label" htmlFor="hospitalsNearby">
+                Hospitals Nearby
+              </label>
             </div>
-          </div>
-          <div className="col-md-6 mb-3">
             <div className="form-check">
               <input
                 type="checkbox"
@@ -118,14 +138,17 @@ const PropertyListContainer = () => {
                 checked={filters.collegesNearby}
                 onChange={handleFilterChange}
                 className="form-check-input"
+                id="collegesNearby"
               />
-              <label className="form-check-label">Colleges Nearby</label>
+              <label className="form-check-label" htmlFor="collegesNearby">
+                Colleges Nearby
+              </label>
             </div>
           </div>
         </div>
-        <button type="submit" className="btn btn-primary w-100">Apply Filters</button>
+        <button type="submit" className="btn btn-primary">Apply Filters</button>
       </form>
-      <PropertyList properties={properties} viewType="buyer" />
+      <PropertyListBuyer properties={properties} onDelete={fetchProperties} viewType="buyer" onPropertiesUpdate={handlePropertiesUpdate} />
     </div>
   );
 };
